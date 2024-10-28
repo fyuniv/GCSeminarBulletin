@@ -1,0 +1,65 @@
+name: Convert PDF to HTML and Publish to Github Pages
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 1' # Runs every Monday at midnight
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: List files in repository
+      run: ls -l
+
+    - name: List files in WeeklyBulletins
+      run: ls -l WeeklyBulletins
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Pull pdf2htmlEX Docker image
+      run: docker pull pdf2htmlex/pdf2htmlex:0.18.8.rc2-master-20200820-alpine-3.12.0-x86_64
+
+    - name: Convert PDF to HTML
+      run: |
+        for pdf in WeeklyBulletins/*.pdf; do
+          echo "Processing file: $pdf"
+          pdf_basename=$(basename "$pdf" .pdf)
+          docker run --rm -v "$(pwd)/WeeklyBulletins:/pdf" -w /pdf pdf2htmlex/pdf2htmlex:0.18.8.rc2-master-20200820-alpine-3.12.0-x86_64 --zoom 1.3 --external-hint-tool=ttfautohint "$(basename "$pdf")" "${pdf_basename}.html"
+        done
+
+    - name: Generate index.html
+      run: |
+        sudo apt-get install -y python3
+        python3 generate_index.py
+
+    - name: Copy HTML files to gh-pages branch
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git checkout -b gh-pages
+        mv WeeklyBulletins/*.html .
+        git add .
+        git commit -m 'Automated conversion of PDF to HTML and index update'
+        git push origin gh-pages --force
+
+  # deploy:
+  #   needs: convert
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v3
+
+  #   - name: Deploy to GitHub Pages
+  #     uses: peaceiris/actions-gh-pages@v3
+  #     with:
+  #       github_token: ${{ secrets.GITHUB_TOKEN }}
+  #       publish_dir: .
