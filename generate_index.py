@@ -20,7 +20,7 @@ def generate_index_html(directory):
         if i == 0:
             html_content += f"<li><strong><a href='{file}'>{file}</a> - {mod_time}</strong></li>"
         else:
-            html_content += f"<li><a href='{file}'>{file_title}</a> - {mod_time}</li>"
+            html_content += f"<li><a href='{file}'>Week {file_title}</a> - {mod_time}</li>"
     
     html_content += "</ul></body></html>"
     

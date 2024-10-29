@@ -44,20 +44,31 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-    - name: Create gh-pages branch
+    
+    - name: Create or Checkout gh-pages branch
       run: |
-        git checkout -b gh-pages
-
+        if git show-ref --verify --quiet refs/heads/gh-pages; then
+          git checkout gh-pages
+        else
+          git checkout -b gh-pages
+        fi
+    
     - name: Checkout HTML files
       run: |
-        # git checkout main -- WeeklyBulletins/*.html
-        mv WeeklyBulletins/*.html .
-        rm -rf WeeklyBulletins .github *py
-        git add *.html
-        git commit -m 'Add New Weekly Bulletins'
-
+        if [ -d "WeeklyBulletins" ]; then
+          mv WeeklyBulletins/*.html . || true
+          rm -rf WeeklyBulletins .github *py
+        else
+          echo "No HTML files to move"
+        fi
+    
+    - name: Commit changes
+      run: |
+        git add .
+        if [[ `git status --porcelain` ]]; then
+          git commit -m 'Add New Weekly Bulletins'
+        fi
+  
     - name: Push to gh-pages
       run: |
         git push origin gh-pages --force
-
