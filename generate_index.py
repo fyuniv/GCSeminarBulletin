@@ -9,17 +9,18 @@ def generate_index_html(directory):
     html_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)), reverse=True)
     
     # Generate HTML content
-    html_content = "<html><head><title>Weekly Bulletin of Math Seminars at The Graduate Center of CUNY</title></head><body>"
-    html_content += "<h1>Latest Bulletins</h1>"
+    html_content = "<html><head><title>Math Seminars at The Graduate Center of CUNY</title></head><body>"
+    html_content += '<h1 style="text-align: center;">Weekly Bulletin of Math Seminars at The Graduate Center of CUNY</h1>'
     html_content += "<ul>"
     
     for i, file in enumerate(html_files):
+        file_title = os.path.splitext(file)[0] 
         file_path = os.path.join(directory, file)
         mod_time = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
         if i == 0:
             html_content += f"<li><strong><a href='{file}'>{file}</a> - {mod_time}</strong></li>"
         else:
-            html_content += f"<li><a href='{file}'>{file}</a> - {mod_time}</li>"
+            html_content += f"<li><a href='{file}'>{file_title}</a> - {mod_time}</li>"
     
     html_content += "</ul></body></html>"
     

@@ -40,26 +40,24 @@ jobs:
         sudo apt-get install -y python3
         python3 generate_index.py
 
-    - name: Copy HTML files to gh-pages branch
+    - name: Configure Git
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Create gh-pages branch
+      run: |
         git checkout -b gh-pages
+
+    - name: Checkout HTML files
+      run: |
+        # git checkout main -- WeeklyBulletins/*.html
         mv WeeklyBulletins/*.html .
-        git add .
-        git commit -m 'Automated conversion of PDF to HTML and index update'
+        rm -rf WeeklyBulletins .github *py
+        git add *.html
+        git commit -m 'Add New Weekly Bulletins'
+
+    - name: Push to gh-pages
+      run: |
         git push origin gh-pages --force
 
-  # deploy:
-  #   needs: convert
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
-
-  #   - name: Deploy to GitHub Pages
-  #     uses: peaceiris/actions-gh-pages@v3
-  #     with:
-  #       github_token: ${{ secrets.GITHUB_TOKEN }}
-  #       publish_dir: .
