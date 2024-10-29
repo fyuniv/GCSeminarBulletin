@@ -58,6 +58,7 @@ jobs:
         if [ -d "WeeklyBulletins" ]; then
           mv WeeklyBulletins/*.html . || true
           mv WeeklyBulletins/*.css . || true
+          git checkout main -- fancy.min.css ||true
           rm -rf WeeklyBulletins .github *.py
         else
           echo "No HTML files to move"

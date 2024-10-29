@@ -9,8 +9,41 @@ def generate_index_html(directory):
     html_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)), reverse=True)
     
     # Generate HTML content
-    html_content = "<html><head><title>Math Seminars at The Graduate Center of CUNY</title></head><body>"
-    html_content += '<h1 style="text-align: center;">Weekly Bulletin of Math Seminars at The Graduate Center of CUNY</h1>'
+    html_content = """
+    <html>
+    <head>
+        <title>Math Seminars at The Graduate Center of CUNY</title>
+        <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Gothic A1', sans-serif;
+                margin: 8%;
+            }
+            h1 {
+                text-align: center;
+            }
+            h2 {
+                margin-top: 40px;
+            }
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            li {
+                margin: 10px 0;
+            }
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+    """
+    html_content += '<h1>Weekly Bulletin of Math Seminars at The Graduate Center of CUNY</h1>'
     
     # Add Recent section
     html_content += "<h2>Recent</h2><ul>"
