@@ -38,6 +38,8 @@ jobs:
     - name: Generate index.html
       run: |
         sudo apt-get install -y python3
+        python3 -m pip install pyPDF2
+        python3 addbookmark.py
         python3 generate_index.py
 
     - name: Configure Git
