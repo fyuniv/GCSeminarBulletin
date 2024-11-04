@@ -7,7 +7,7 @@ def extract_section_title(page_text):
         r'^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s*(January|February|March|April|May|June|July|August|September|October|November|December)\s*\d{1,2}',
         re.IGNORECASE
     )
-     
+
     upcoming_event_pattern = re.compile(r'upcoming.*event(s)?|event(s)?.*upcoming', re.IGNORECASE)
 
     cleaned_lines = []
