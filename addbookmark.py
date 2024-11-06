@@ -18,34 +18,34 @@ def extract_section_title(page_text):
 
     return cleaned_lines[0].strip() if cleaned_lines else ''
 
-def extract_semester_year(page_text):
-    lines = page_text.splitlines()
-    for line in lines:
-        line = line.strip()
-        semester_year_match = re.search(r'(\w+)\s+(\d{4})', line)
-        if semester_year_match:
-            semester_year = f"{semester_year_match.group(1)} {semester_year_match.group(2)}"
-            return semester_year
-    return ''
+# def extract_semester_year(page_text):
+#     lines = page_text.splitlines()
+#     for line in lines:
+#         line = line.strip()
+#         semester_year_match = re.search(r'(\w+)\s+(\d{4})', line)
+#         if semester_year_match:
+#             semester_year = f"{semester_year_match.group(1)} {semester_year_match.group(2)}"
+#             return semester_year
+#     return ''
 
 def add_bookmarks_to_pdf(pdf_path):
     with open(pdf_path, 'rb') as file:
         reader = PyPDF2.PdfReader(file)
         writer = PyPDF2.PdfWriter()
         
-        semester_year = ''
+        # semester_year = ''
         
-        # Process the first page to get semester year and prepare for bookmarks
-        if len(reader.pages) > 0:
-            first_page_text = reader.pages[0].extract_text()
+        # # Process the first page to get semester year and prepare for bookmarks
+        # if len(reader.pages) > 0:
+        #     first_page_text = reader.pages[0].extract_text()
             
-            if first_page_text:
-                semester_year = extract_semester_year(first_page_text)
+        #     if first_page_text:
+        #         semester_year = extract_semester_year(first_page_text)
 
-        # First pass to add the title page bookmark if available
-        if semester_year:
-            title_page_bookmark = f'CUNY GC Seminars - {semester_year}'
-            writer.add_outline_item(title_page_bookmark, 0)  # Page 0 is the title page
+        # # First pass to add the title page bookmark if available
+        # if semester_year:
+        #     title_page_bookmark = f'CUNY GC Seminars - {semester_year}'
+        #     writer.add_outline_item(title_page_bookmark, 0)  # Page 0 is the title page
 
         # Second pass to add section title bookmarks
         for page in range(len(reader.pages)):
@@ -54,7 +54,7 @@ def add_bookmarks_to_pdf(pdf_path):
             if page_text:
                 section_title = extract_section_title(page_text)
                 if section_title:
-                    writer.add_outline_item(section_title, page)
+                    writer.add_outline_item(section_title, page - 1)
 
         # Overwrite the original PDF file with bookmarks
         with open(pdf_path, 'wb') as output_file:

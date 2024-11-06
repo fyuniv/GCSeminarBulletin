@@ -36,6 +36,14 @@ jobs:
           docker run --rm -v "$(pwd)/WeeklyBulletins:/pdf" -w /pdf pdf2htmlex/pdf2htmlex:0.18.8.rc2-master-20200820-alpine-3.12.0-x86_64 --zoom 1.3 --external-hint-tool=ttfautohint --embed-css 0 --first-page 0 "$(basename "$pdf")" "${pdf_basename}.html"
         done
 
+    - name: Change file ownership and permissions
+      run: |
+        sudo chown -R $USER:$USER WeeklyBulletins
+        sudo chmod -R 755 WeeklyBulletins
+
+    - name: Add home cover links
+      run: sudo python3 add_menus.py
+
     - name: Generate index.html
       run: |
         python3 generate_index.py
